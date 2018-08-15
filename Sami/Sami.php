@@ -73,6 +73,7 @@ class Sami extends Container
                 'source_url' => $sc['source_url'],
                 'source_dir' => $sc['source_dir'],
                 'insert_todos' => $sc['insert_todos'],
+                'use_package_as_namespace' => $sc['use_package_as_namespace'],
                 'sort_class_properties' => $sc['sort_class_properties'],
                 'sort_class_methods' => $sc['sort_class_methods'],
                 'sort_class_constants' => $sc['sort_class_constants'],
@@ -142,6 +143,7 @@ class Sami extends Container
                 new ClassVisitor\InheritdocClassVisitor(),
                 new ClassVisitor\MethodClassVisitor(),
                 new ClassVisitor\PropertyClassVisitor($sc['parser_context']),
+                new ClassVisitor\PackageClassVisitor($sc['use_package_as_namespace'])
             );
 
             if ($sc['remote_repository'] instanceof AbstractRemoteRepository) {
@@ -181,6 +183,7 @@ class Sami extends Container
         $this['source_url'] = '';
         $this['default_opened_level'] = 2;
         $this['insert_todos'] = false;
+        $this['use_package_as_namespace'] = false;
         $this['sort_class_properties'] = false;
         $this['sort_class_methods'] = false;
         $this['sort_class_constants'] = false;
