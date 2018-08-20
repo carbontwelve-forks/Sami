@@ -203,6 +203,7 @@ class ClassReflection extends Reflection
 
     protected $hash;
     protected $namespace;
+    protected $package;
     protected $modifiers;
     protected $properties = array();
     protected $methods = array();
@@ -312,6 +313,16 @@ class ClassReflection extends Reflection
     public function setProject(Project $project)
     {
         $this->project = $project;
+    }
+
+    public function setPackage($package)
+    {
+        $this->package = trim($package);
+    }
+
+    public function getPackage()
+    {
+        return $this->package;
     }
 
     public function setNamespace($namespace)

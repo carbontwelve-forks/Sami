@@ -22,6 +22,9 @@ class ParserContext
     protected $errors;
     protected $namespace;
     protected $aliases;
+    /**
+     * @var ClassReflection|null
+     */
     protected $class;
     protected $file;
     protected $hash;
@@ -141,5 +144,18 @@ class ParserContext
     public function getNamespace()
     {
         return $this->namespace;
+    }
+
+    public function getPackage()
+    {
+        if (! $package = $this->class->getTags('package')){
+            return '';
+        }
+
+        while(is_array($package)){
+            $package = reset($package);
+        }
+
+        return $package;
     }
 }

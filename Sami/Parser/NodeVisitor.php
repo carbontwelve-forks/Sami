@@ -144,6 +144,8 @@ class NodeVisitor extends NodeVisitorAbstract
             $this->context->enterClass($class);
         }
 
+        $class->setPackage($this->context->getPackage());
+
         return $class;
     }
 

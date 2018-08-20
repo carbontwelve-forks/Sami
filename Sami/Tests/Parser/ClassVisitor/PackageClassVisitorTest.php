@@ -13,28 +13,25 @@ namespace Sami\Tests\Parser\ClassVisitor;
 
 use PHPUnit\Framework\TestCase;
 use Sami\Parser\ClassVisitor\PackageClassVisitor;
+use Sami\Reflection\ClassReflection;
 
 class PackageClassVisitorTest extends TestCase
 {
     public function testMutatesNamespaceWithPackage()
     {
+        /** @var ClassReflection $class */
         $class = $this->getMockBuilder('Sami\Reflection\ClassReflection')
-            ->setMethods(array('getTags'))
-            ->setConstructorArgs(array('Mock', 1))
+            ->setMethods(['getTags', 'getPackage'])
+            ->setConstructorArgs(['Mock', 1])
             ->getMock();
-        $package = array(
-            "Hello\\World"
-        );
+
         $class->expects($this->any())
-            ->method('getTags')
-            ->with($this->equalTo('package'))
-            ->will($this->returnValue($package));
+            ->method('getPackage')
+            ->will($this->returnValue("Hello\\World"));
+
 
         $visitor = new PackageClassVisitor(true);
-        $visitor->visit($class);
-
-        $this->assertEquals('Hello\\World', $class->getNamespace());
+        $this->assertTrue($visitor->visit($class));
+        $this->assertEquals('Hello\\World', $class->getPackage());
     }
-
-    // @todo test that namespace doens't get overwritten by package tag
 }

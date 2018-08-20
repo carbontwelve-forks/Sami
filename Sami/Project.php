@@ -61,6 +61,7 @@ class Project
             'build_dir' => sys_get_temp_dir().'sami/build',
             'cache_dir' => sys_get_temp_dir().'sami/cache',
             'simulate_namespaces' => false,
+            'use_package_as_namespace' => false,
             'include_parent_data' => true,
             'theme' => 'default',
         ), $config);
@@ -406,6 +407,20 @@ class Project
                 }
             } else {
                 $this->simulatedNamespaces[''][$name] = $class;
+            }
+        }
+        if ($this->getConfig('use_package_as_namespace')) {
+            $package = $class->getPackage();
+            if (strlen($package) > 0) {
+                $this->namespaces[$package] = $package;
+
+                while ($package = substr($package, 0, strrpos($package, '\\'))) {
+                    $this->namespaces[$package] = $package;
+                }
+
+                // Remove from root namespace if package is being used as a virtual namespace.
+                unset($this->namespaceClasses[''][$name]);
+                $this->namespaceClasses[$class->getPackage()][$name] = $class;
             }
         }
     }

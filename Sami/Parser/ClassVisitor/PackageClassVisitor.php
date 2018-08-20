@@ -17,7 +17,11 @@ use Sami\Reflection\ClassReflection;
 use Sami\Reflection\PropertyReflection;
 
 /**
- * Looks for package tags and sets the class namespace to them.
+ * Class PackageClassVisitor
+ *
+ * If enabled this overwrites Namespace with Package name.
+ *
+ * @package Sami\Parser\ClassVisitor
  */
 class PackageClassVisitor implements ClassVisitorInterface
 {
@@ -32,10 +36,16 @@ class PackageClassVisitor implements ClassVisitorInterface
      */
     public function __construct(bool $enabled)
     {
-
         $this->enabled = $enabled;
     }
 
+    /**
+     * Modify the namespace of the ClassReflection to
+     * equal the package name only if enabled.
+     *
+     * @param ClassReflection $class
+     * @return bool
+     */
     public function visit(ClassReflection $class): bool
     {
         if (!$this->enabled){
@@ -43,30 +53,12 @@ class PackageClassVisitor implements ClassVisitorInterface
         }
 
         $modified = false;
-        $properties = $class->getTags('package');
-        if (!empty($properties)) {
-            if ($this->injectProperty($class, reset($properties))) {
-                $modified = true;
-            }
+
+        if (strlen($class->getPackage()) > 0) {
+            $class->setNamespace($class->getPackage());
+            $modified = true;
         }
 
         return $modified;
-    }
-
-    /**
-     * Mutate the class namespace based upon package tag.
-     *
-     * @param ClassReflection $class      Class reflection
-     * @param string          $packageTag Package tag contents
-     *
-     * @return bool
-     */
-    protected function injectProperty(ClassReflection $class, string $packageTag): bool
-    {
-        if (strlen($packageTag) > 0 && is_null($class->getNamespace())) {
-            $class->setNamespace($packageTag);
-        }
-
-        return false;
     }
 }
